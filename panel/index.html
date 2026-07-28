@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#080a10;--c1:rgba(16,20,28,.92);--c2:rgba(20,25,35,.95);--ci:rgba(10,13,20,.95);--bs:rgba(255,255,255,.04);--bm:rgba(255,255,255,.08);--bg2:rgba(212,175,55,.2);--a:#d4af37;--al:#f0dfa0;--ad:rgba(212,175,55,.12);--t:#14b8a6;--td:rgba(20,184,166,.1);--g:#22c55e;--gd:rgba(34,197,94,.1);--r:#ef4444;--rd:rgba(239,68,68,.1);--y:#eab308;--tx:#e8ecf4;--t2:#8b95a8;--t3:#505a6e;--rl:16px;--rm:8px;--rs:6px;--f:'Outfit',system-ui,sans-serif;--m:'JetBrains Mono',monospace;--sb:env(safe-area-inset-bottom,0px);}
+        *{box-sizing:border-box;margin:0;padding:0;font-family:var(--f);-webkit-tap-highlight-color:transparent;}
+        html{scroll-behavior:smooth;}
+        body{background:var(--bg);color:var(--tx);min-height:100dvh;overflow-x:hidden;background-image:radial-gradient(ellipse at 15% 0%,rgba(212,175,55,.03) 0%,transparent 50%),radial-gradient(ellipse at 85% 100%,rgba(20,184,166,.02) 0%,transparent 50%);background-attachment:fixed;}
+        ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(212,175,55,.12);border-radius:4px;}
+        .gt{background:linear-gradient(135deg,var(--al),var(--a));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .mono{font-family:var(--m);}.hidden{display:none!important;}
+        .gc{background:var(--c1);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--bs);border-radius:var(--rl);transition:border-color .25s;}
+        .gc:hover{border-color:var(--bm);}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem 1.1rem;border-radius:var(--rm);font-size:.8rem;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap;user-select:none;letter-spacing:.02em;}
+        .btn:active{transform:scale(.96);}
+        .bp{background:linear-gradient(135deg,var(--a),#c09b2d);color:#000;box-shadow:0 2px 12px rgba(212,175,55,.15);}
+        .bp:hover{box-shadow:0 4px 20px rgba(212,175,55,.25);filter:brightness(1.08);}
+        .bs2{background:rgba(255,255,255,.03);color:var(--tx);border-color:var(--bm);}
+        .bs2:hover{background:rgba(255,255,255,.06);border-color:rgba(212,175,55,.25);}
+        .bd{background:var(--rd);color:#fca5a5;border-color:rgba(239,68,68,.15);}
+        .bd:hover{background:rgba(239,68,68,.18);}
+        .bsm{padding:.45rem .8rem;font-size:.72rem;border-radius:var(--rs);}
+        .bi{width:34px;height:34px;min-width:34px;padding:0;border-radius:var(--rm);background:rgba(255,255,255,.03);color:var(--t2);border:1px solid var(--bs);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:.95rem;}
+        .bi:hover{color:var(--a);background:var(--ad);border-color:var(--bg2);}
+        .bi:active{transform:scale(.9);}
+        .ig{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1rem;}
+        .ig label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);}
+        .ig input,.ig select{width:100%;padding:.7rem .9rem;background:var(--ci);border:1px solid var(--bm);border-radius:var(--rm);color:var(--tx);font-size:.85rem;outline:none;transition:all .2s;}
+        .ig input:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(212,175,55,.06);}
+        .ir{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+        #tc{position:fixed;top:.75rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:.4rem;pointer-events:none;width:92%;max-width:360px;}
+        .toast{pointer-events:auto;padding:.75rem 1rem;border-radius:var(--rl);background:rgba(16,20,28,.97);backdrop-filter:blur(16px);border:1px solid var(--bm);color:var(--tx);font-size:.82rem;font-weight:500;display:flex;align-items:center;gap:.6rem;box-shadow:0 10px 35px rgba(0,0,0,.5);animation:tIn .3s cubic-bezier(.16,1,.3,1);}
+        @keyframes tIn{from{transform:translateY(-16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+        .toast.s{border-left:3px solid var(--g);}.toast.e{border-left:3px solid var(--r);}.toast.i{border-left:3px solid var(--t);}
+        .badge{display:inline-flex;align-items:center;padding:.25rem .6rem;border-radius:50px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+        .bg2{background:var(--gd);color:var(--g);}.br{background:var(--rd);color:#fca5a5;}.by{background:var(--ad);color:var(--al);}.bgr{background:rgba(255,255,255,.05);color:var(--t2);}.bt{background:var(--td);color:var(--t);}
+        @keyframes pulse{0%,100%{opacity:.3;transform:scale(.9);}50%{opacity:1;transform:scale(1.1);}}
+        #lv{display:flex;align-items:center;justify-content:center;min-height:100dvh;}
+        #lview{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:1.5rem;background:radial-gradient(circle at center,rgba(212,175,55,.04) 0%,transparent 50%);}
+        .lcard{width:100%;max-width:380px;padding:2.5rem 2rem;text-align:center;}
+        .sidebar{width:250px;background:rgba(10,13,19,.98);border-right:1px solid var(--bs);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:100;}
+        .sb-hdr{padding:1.5rem 1.25rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--bs);}
+        .sb-nav{padding:1rem .6rem;display:flex;flex-direction:column;gap:.15rem;flex:1;}
+        .ni{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:var(--rm);color:var(--t2);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+        .ni:hover{color:var(--tx);background:rgba(255,255,255,.03);}
+        .ni.a{color:var(--a);background:var(--ad);border-left-color:var(--a);}
+        .ni .nc{font-size:1.1rem;width:26px;text-align:center;}
+        .sb-ft{padding:1rem .6rem;border-top:1px solid var(--bs);}
+        .main{margin-left:250px;padding:1.75rem 2rem;max-width:1200px;}
+        .mhdr{display:none;position:fixed;top:0;left:0;right:0;height:52px;z-index:90;background:rgba(8,10,16,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--bs);padding:0 1rem;align-items:center;justify-content:space-between;}
+        .bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(8,10,16,.97);backdrop-filter:blur(16px);border-top:1px solid var(--bs);padding:.35rem .25rem calc(.35rem + var(--sb));justify-content:space-around;align-items:center;}
+        .bni{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.35rem .6rem;border-radius:var(--rm);cursor:pointer;transition:all .15s;color:var(--t3);position:relative;}
+        .bni .bic{font-size:1.2rem;transition:transform .15s;}.bni .blb{font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+        .bni.a{color:var(--a);}.bni.a .bic{transform:scale(1.15);}
+        .bni.a::after{content:'';position:absolute;top:-4px;width:20px;height:3px;border-radius:2px;background:var(--a);box-shadow:0 0 8px rgba(212,175,55,.4);}
+        .bni:active{transform:scale(.9);}
+        .ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;gap:.75rem;flex-wrap:wrap;}
+        .pt{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;}
+        .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:1.5rem;}
+        .sc{padding:1.1rem 1.25rem;position:relative;overflow:hidden;}
+        .sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),transparent);opacity:0;transition:opacity .3s;}
+        .sc:hover::after{opacity:1;}
+        .sl{font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+        .sv{font-size:1.6rem;font-weight:300;letter-spacing:-.03em;}
+        .sd{font-size:.7rem;color:var(--t3);margin-top:.25rem;}
+        .sbar{padding:.9rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;}
+        .schip{display:flex;flex-direction:column;gap:.1rem;}
+        .scl{font-size:.6rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;}
+        .scv{font-size:.82rem;color:var(--tx);}
+        .ucards{display:flex;flex-direction:column;gap:.6rem;}
+        .uc{padding:0;overflow:hidden;}
+        .ucb{padding:1.1rem 1.15rem 0;}
+        .uct{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
+        .ucn{font-family:var(--m);font-size:.95rem;font-weight:600;color:var(--al);}
+        .ucg{display:grid;grid-template-columns:1fr 1fr;gap:.55rem .8rem;margin-bottom:.85rem;}
+        .uf{display:flex;flex-direction:column;gap:.1rem;}
+        .ufl{font-size:.6rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;}
+        .ufv{font-size:.8rem;color:var(--tx);}
+        .uca{display:flex;gap:0;border-top:1px solid var(--bs);}
+        .uact{flex:1;padding:.7rem .25rem;text-align:center;font-size:.7rem;font-weight:600;color:var(--t2);cursor:pointer;transition:all .12s;border:none;background:transparent;border-right:1px solid var(--bs);display:flex;flex-direction:column;align-items:center;gap:.15rem;}
+        .uact:last-child{border-right:none;}
+        .uact:hover{background:rgba(255,255,255,.03);color:var(--tx);}
+        .uact:active{background:rgba(255,255,255,.06);transform:scale(.96);}
+        .uact .uai{font-size:.95rem;}
+        .uact.dng{color:#fca5a5;}.uact.dng:hover{background:var(--rd);}
+        .tw{display:block;}.tw table{width:100%;border-collapse:collapse;}
+        .tw th{padding:.75rem .9rem;font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--bm);background:rgba(0,0,0,.12);text-align:left;}
+        .tw td{padding:.85rem .9rem;font-size:.8rem;border-bottom:1px solid var(--bs);vertical-align:middle;}
+        .tw tr:hover td{background:rgba(255,255,255,.015);}
+        .tda{display:flex;gap:.25rem;justify-content:flex-end;}
+        .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem;}
+        .pcard{padding:1.15rem 1.25rem;display:flex;flex-direction:column;gap:.75rem;}
+        .mo{position:fixed;inset:0;background:rgba(8,10,16,.88);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:all .2s;}
+        .mo.active{opacity:1;pointer-events:auto;}
+        .mb2{width:100%;max-width:460px;background:var(--c2);border:1px solid var(--bm);border-radius:var(--rl);padding:1.5rem;box-shadow:0 20px 50px rgba(0,0,0,.6);transform:scale(.96) translateY(8px);transition:all .25s cubic-bezier(.16,1,.3,1);max-height:90dvh;overflow-y:auto;}
+        .mo.active .mb2{transform:scale(1) translateY(0);}
+        .mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+        .mtl{font-size:1.1rem;font-weight:700;}
+        .mft{display:flex;gap:.6rem;margin-top:1.25rem;}.mft .btn{flex:1;}
+        .sbox{margin-bottom:1rem;}
+        .sbox input{width:100%;max-width:340px;padding:.65rem .9rem .65rem 2.3rem;background:var(--ci);border:1px solid var(--bm);border-radius:var(--rl);color:var(--tx);font-size:.82rem;outline:none;transition:all .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23505a6e' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.44.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:.75rem center;}
+        .sbox input:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(212,175,55,.06);}
+        .rbar{padding:.85rem 1.1rem;margin-bottom:1.25rem;display:flex;gap:1.25rem;flex-wrap:wrap;}
+        .dl{font-size:.68rem;color:var(--t3);margin-top:.1rem;}.dl.sn{color:var(--y);}.dl.ex{color:#fca5a5;}
+        /* Logout button */
+        .lo-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.55rem .9rem;border-radius:var(--rm);font-size:.75rem;font-weight:600;color:var(--t2);cursor:pointer;border:1px solid rgba(239,68,68,.15);background:rgba(239,68,68,.05);transition:all .15s;width:100%;}
+        .lo-btn:hover{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.3);}
+        .lo-btn:active{transform:scale(.97);}
+        @media(max-width:768px){
+            .sidebar{display:none;}.mhdr{display:flex;}.bnav{display:flex;}
+            .main{margin-left:0;padding:3.75rem .85rem calc(4.5rem + var(--sb));}
+            .tw{display:none;}.ph{margin-bottom:1rem;}.pt{font-size:1.15rem;}
+            .sgrid{grid-template-columns:1fr 1fr;gap:.5rem;}.sc{padding:.85rem 1rem;}.sv{font-size:1.3rem;}
+            .pgrid{grid-template-columns:1fr;}
+            .pa{display:flex;gap:.4rem;width:100%;}.pa .btn{flex:1;}
+            .mo{align-items:flex-end;padding:0;}
+            .mb2{border-radius:var(--rl) var(--rl) 0 0;max-height:88dvh;transform:translateY(100%);}
+            .mo.active .mb2{transform:translateY(0);}
+            .sbar{gap:.8rem;}.sbox input{max-width:100%;}
+        }
+        @media(min-width:769px){.ucards{display:none;}}
+        @media(max-width:768px){.ucards{display:flex;}}
+    </style>
+</head>
+<body>
+<div id="tc"></div>
+<div id="lv"><div style="font-size:4rem;filter:drop-shadow(0 0 25px rgba(212,175,55,.25));animation:pulse 1.8s infinite;" id="lv-logo">🦅</div></div>
+
+<div id="lview" class="hidden">
+<div class="gc lcard">
+    <div style="font-size:3.5rem;margin-bottom:.5rem;filter:drop-shadow(0 0 20px rgba(212,175,55,.25));" id="login-logo">🦅</div>
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:.2rem;" class="gt" id="login-name">FirewallFalcon</h1>
+    <p style="font-size:.72rem;color:var(--t3);margin-bottom:2rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;">Control Panel</p>
+    <form id="lf">
+        <div class="ig" style="text-align:left;"><label>Username</label><input type="text" id="lu" required autocomplete="username"></div>
+        <div class="ig" style="text-align:left;"><label>Password</label><input type="password" id="lp" required autocomplete="current-password"></div>
+        <button type="submit" id="lb" class="btn bp" style="width:100%;margin-top:.75rem;padding:.8rem;">Sign In</button>
+    </form>
+</div>
+</div>
+
+<div id="av" class="hidden">
+<div class="mhdr">
+    <div style="display:flex;align-items:center;gap:.4rem;">
+        <span style="font-size:1.2rem;" id="mh-logo">🦅</span>
+        <span class="gt" style="font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;" id="mh-name">FirewallFalcon</span>
+    </div>
+    <button class="lo-btn" id="mlo" style="width:auto;padding:.4rem .7rem;font-size:.7rem;">Log Out</button>
+</div>
+<nav class="bnav" id="bn">
+    <div class="bni a" data-t="dashboard"><span class="bic">📊</span><span class="blb">Home</span></div>
+    <div class="bni" data-t="users"><span class="bic">👥</span><span class="blb">Users</span></div>
+    <div class="bni ao" data-t="resellers"><span class="bic">🤝</span><span class="blb">Resellers</span></div>
+    <div class="bni ao" data-t="protocols"><span class="bic">📡</span><span class="blb">Services</span></div>
+    <div class="bni ao" data-t="settings"><span class="bic">⚙️</span><span class="blb">Settings</span></div>
+</nav>
+<aside class="sidebar">
+    <div class="sb-hdr"><span style="font-size:1.4rem;" id="sb-logo">🦅</span><span class="gt" style="font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;" id="sb-name">FirewallFalcon</span></div>
+    <nav class="sb-nav">
+        <div class="ni a" data-t="dashboard"><span class="nc">📊</span>Dashboard</div>
+        <div class="ni" data-t="users"><span class="nc">👥</span>Accounts</div>
+        <div class="ni ao" data-t="resellers"><span class="nc">🤝</span>Resellers</div>
+        <div class="ni ao" data-t="protocols"><span class="nc">📡</span>Services</div>
+        <div class="ni ao" data-t="settings"><span class="nc">⚙️</span>Settings</div>
+    </nav>
+    <div class="sb-ft"><div id="sr" style="text-align:center;margin-bottom:.6rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);"></div><button class="lo-btn" id="blo">Log Out</button></div>
+</aside>
+<main class="main">
+    <section id="tab-dashboard" class="tp">
+        <div class="ph" style="align-items:center;"><div><h1 class="pt">Dashboard</h1><p style="color:var(--t2);font-size:.78rem;">System overview</p></div><div class="ao"><button class="lo-btn" style="width:auto;padding:.45rem .8rem;" onclick="sysReboot()">🔄 Reboot</button></div></div>
+        <div id="rib" class="gc rbar hidden"><div style="display:flex;flex-direction:column;gap:.05rem;"><span class="scl">Quota</span><span style="font-size:.85rem;font-weight:500;color:var(--al);" id="ri-q">--</span></div><div style="display:flex;flex-direction:column;gap:.05rem;"><span class="scl">Expires</span><span style="font-size:.85rem;font-weight:500;color:var(--al);" id="ri-e">--</span></div></div>
+        <div class="sgrid">
+            <div class="gc sc"><div class="sl">Accounts</div><div class="sv gt" id="du">--</div><div class="sd" id="dud">Managed users</div></div>
+            <div class="gc sc"><div class="sl">Online</div><div class="sv" style="color:var(--t);" id="do">--</div><div class="sd">Active sessions</div></div>
+            <div class="gc sc"><div class="sl">Memory</div><div class="sv" id="dr">--%</div><div class="sd" id="drd">-- / -- MB</div></div>
+            <div class="gc sc"><div class="sl">CPU</div><div class="sv" id="dc">--</div><div class="sd">1 min load</div></div>
+        </div>
+        <div class="gc sbar"><div class="schip"><span class="scl">IP</span><span class="scv mono" id="sip">--</span></div><div class="schip"><span class="scl">OS</span><span class="scv" id="sos">--</span></div><div class="schip"><span class="scl">Uptime</span><span class="scv" id="sup">--</span></div></div>
+        <div id="dps"><h2 style="font-size:.95rem;font-weight:600;margin-bottom:.75rem;">Services</h2><div class="pgrid" id="dp"></div></div>
+    </section>
+    <section id="tab-users" class="tp hidden">
+        <div class="ph"><div><h1 class="pt">Accounts</h1><p style="color:var(--t2);font-size:.78rem;">SSH user management</p></div><div class="pa"><button class="btn bs2 bsm" onclick="openM('mbk')">Bulk</button><button class="btn bp bsm" onclick="openCU()">+ New</button></div></div>
+        <div class="sbox"><input type="text" id="su" placeholder="Search..." oninput="fU()"></div>
+        <div class="gc tw" style="padding:0;overflow:hidden;"><div style="overflow-x:auto;"><table><thead><tr><th>User</th><th>Pass</th><th>Expiry</th><th>Conn</th><th>BW</th><th>Status</th><th class="ao">Owner</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="utb"></tbody></table></div></div>
+        <div class="ucards" id="ucc"></div>
+    </section>
+    <section id="tab-resellers" class="tp hidden">
+        <div class="ph"><div><h1 class="pt">Resellers</h1><p style="color:var(--t2);font-size:.78rem;">Manage resellers</p></div><div class="pa"><button class="btn bp bsm" onclick="openM('mcr')">+ New</button></div></div>
+        <div class="gc tw" style="padding:0;overflow:hidden;"><div style="overflow-x:auto;"><table><thead><tr><th>User</th><th>Pass</th><th>Expiry</th><th>Users</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="rtb"></tbody></table></div></div>
+        <div class="ucards" id="rcc"></div>
+    </section>
+    <section id="tab-protocols" class="tp hidden">
+        <div class="ph"><div><h1 class="pt">Services</h1><p style="color:var(--t2);font-size:.78rem;">Protocol daemons</p></div></div>
+        <div class="pgrid" id="pg"></div>
+    </section>
+    <section id="tab-settings" class="tp hidden">
+        <div class="ph"><div><h1 class="pt">Settings</h1><p style="color:var(--t2);font-size:.78rem;">Panel configuration</p></div></div>
+        <div class="gc" style="max-width:480px;padding:1.75rem;">
+            <form id="sf">
+                <h3 style="font-size:.85rem;font-weight:700;color:var(--al);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em;">🎨 Branding</h3>
+                <div class="ir"><div class="ig"><label>Panel Name</label><input type="text" id="s-pn" placeholder="FirewallFalcon"></div><div class="ig"><label>Logo Emoji</label><input type="text" id="s-pl" placeholder="🦅" maxlength="4"></div></div>
+                <div style="height:1px;background:var(--bs);margin:1.25rem 0;"></div>
+                <h3 style="font-size:.85rem;font-weight:700;color:var(--al);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em;">🔒 Credentials</h3>
+                <div class="ig"><label>Current User</label><input type="text" id="scu" readonly disabled style="opacity:.4;"></div>
+                <div class="ig"><label>Current Password (required)</label><input type="password" id="scp" required placeholder="Verify identity"></div>
+                <div class="ir"><div class="ig"><label>New Username</label><input type="text" id="snu" placeholder="Keep current"></div><div class="ig"><label>New Password</label><input type="password" id="snp" placeholder="Keep current"></div></div>
+                <div style="height:1px;background:var(--bs);margin:1.25rem 0;"></div>
+                <h3 style="font-size:.85rem;font-weight:700;color:var(--al);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em;">🔗 Access</h3>
+                <div class="ig"><label>Secret URL Path</label><input type="text" id="ss" placeholder="e.g. mysecret"><p style="font-size:.68rem;color:var(--t3);margin-top:.3rem;">URL: <span class="mono" id="sur" style="color:var(--a);">--</span></p></div>
+                <div style="text-align:right;margin-top:1.5rem;"><button type="submit" class="btn bp">Save Changes</button></div>
+            </form>
+        </div>
+    </section>
+</main>
+</div>
+
+<!-- MODALS -->
+<div class="mo" id="mcu"><div class="mb2"><div class="mhd"><h3 class="mtl">New Account</h3><button class="bi" onclick="closeM('mcu')" style="border:none;">✕</button></div>
+<form id="fcu"><div class="ig"><label>Username</label><input type="text" id="cn" required pattern="[a-zA-Z0-9_]+"></div>
+<div class="ig"><label>Password</label><div style="display:flex;gap:.4rem;"><input type="text" id="cp" required style="flex:1;"><button type="button" class="btn bs2 bsm" onclick="gp('cp')">Gen</button></div></div>
+<div class="ir"><div class="ig"><label>Days</label><input type="number" id="cd" value="30" min="1" required></div><div class="ig"><label>Devices</label><input type="number" id="cc" value="1" min="1" required></div></div>
+<div class="ir"><div class="ig"><label>Total BW (GB)</label><input type="number" step=".1" id="cb" value="0" min="0"></div><div class="ig"><label>Daily BW (GB)</label><input type="number" step=".1" id="cdb" value="0" min="0"></div></div>
+<div id="cq" class="hidden" style="padding:.55rem .85rem;background:var(--ad);border:1px solid var(--bg2);border-radius:var(--rm);margin-bottom:.85rem;font-size:.72rem;color:var(--al);"></div>
+<div class="mft"><button type="button" class="btn bs2" onclick="closeM('mcu')">Cancel</button><button type="submit" class="btn bp">Create</button></div></form></div></div>
+
+<div class="mo" id="meu"><div class="mb2"><div class="mhd"><h3 class="mtl">Edit Account</h3><button class="bi" onclick="closeM('meu')" style="border:none;">✕</button></div>
+<form id="feu"><input type="hidden" id="euh"><div class="ig"><label>Username</label><input type="text" id="eun" disabled style="opacity:.4;"></div>
+<div class="ig"><label>New Password</label><div style="display:flex;gap:.4rem;"><input type="text" id="eup" style="flex:1;" placeholder="Unchanged"><button type="button" class="btn bs2 bsm" onclick="gp('eup')">Gen</button></div></div>
+<div class="ir"><div class="ig"><label>Days</label><input type="number" id="eud" min="1" placeholder="Keep"></div><div class="ig"><label>Devices</label><input type="number" id="euc" min="1" required></div></div>
+<div class="ir"><div class="ig"><label>Total BW (GB)</label><input type="number" step=".1" id="eub" min="0"></div><div class="ig"><label>Daily BW (GB)</label><input type="number" step=".1" id="eudb" min="0"></div></div>
+<div class="mft"><button type="button" class="btn bs2" onclick="closeM('meu')">Cancel</button><button type="submit" class="btn bp">Update</button></div></form></div></div>
+
+<div class="mo" id="mbk"><div class="mb2"><div class="mhd"><h3 class="mtl">Bulk Create</h3><button class="bi" onclick="closeM('mbk')" style="border:none;">✕</button></div>
+<form id="fb"><div class="ir"><div class="ig"><label>Prefix</label><input type="text" id="bp2" value="user" required></div><div class="ig"><label>Count</label><input type="number" id="bc" value="5" min="1" max="50" required></div></div>
+<div class="ir"><div class="ig"><label>Days</label><input type="number" id="bd" value="30" min="1" required></div><div class="ig"><label>Devices</label><input type="number" id="bcc" value="1" min="1" required></div></div>
+<div class="mft"><button type="button" class="btn bs2" onclick="closeM('mbk')">Cancel</button><button type="submit" class="btn bp">Create</button></div></form></div></div>
+
+<div class="mo" id="mcr"><div class="mb2"><div class="mhd"><h3 class="mtl">New Reseller</h3><button class="bi" onclick="closeM('mcr')" style="border:none;">✕</button></div>
+<form id="fcr"><div class="ig"><label>Username</label><input type="text" id="rn" required pattern="[a-zA-Z0-9_]+"></div>
+<div class="ig"><label>Password</label><div style="display:flex;gap:.4rem;"><input type="text" id="rp2" required style="flex:1;"><button type="button" class="btn bs2 bsm" onclick="gp('rp2')">Gen</button></div></div>
+<div class="ir"><div class="ig"><label>Days</label><input type="number" id="rd" value="30" min="1" required></div><div class="ig"><label>Max Users</label><input type="number" id="rm" value="10" min="1" required></div></div>
+<div class="mft"><button type="button" class="btn bs2" onclick="closeM('mcr')">Cancel</button><button type="submit" class="btn bp">Create</button></div></form></div></div>
+
+<div class="mo" id="mer"><div class="mb2"><div class="mhd"><h3 class="mtl">Edit Reseller</h3><button class="bi" onclick="closeM('mer')" style="border:none;">✕</button></div>
+<form id="fer"><input type="hidden" id="erh"><div class="ig"><label>Username</label><input type="text" id="ern" disabled style="opacity:.4;"></div>
+<div class="ig"><label>New Password</label><div style="display:flex;gap:.4rem;"><input type="text" id="erp" style="flex:1;" placeholder="Unchanged"><button type="button" class="btn bs2 bsm" onclick="gp('erp')">Gen</button></div></div>
+<div class="ir"><div class="ig"><label>Extend Days</label><input type="number" id="erd" min="1" placeholder="Keep"></div><div class="ig"><label>Max Users</label><input type="number" id="erm" min="1" required></div></div>
+<div class="mft"><button type="button" class="btn bs2" onclick="closeM('mer')">Cancel</button><button type="submit" class="btn bp">Update</button></div></form></div></div>
+
+<script>
+let U=[],RL='admin',ME='',PN='FirewallFalcon',PL='🦅';
+const E=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fB=b=>{if(!b)return'0 MB';const g=b/1073741824;return g>=1?g.toFixed(1)+'G':(b/1048576).toFixed(0)+' MB';};
+function dL(d){if(!d||d==='Never')return'';const ms=new Date(d+'T23:59:59')-new Date();const dl=Math.ceil(ms/86400000);if(dl<0)return`<span class="dl ex">${Math.abs(dl)}d ago</span>`;if(dl<=7)return`<span class="dl sn">${dl}d left</span>`;return`<span class="dl">${dl}d left</span>`;}
+function T(m,t='i'){const c=document.getElementById('tc'),d=document.createElement('div');d.className=`toast ${t}`;d.innerHTML=`<span style="font-weight:700;font-family:var(--m);">${t==='s'?'✓':t==='e'?'✕':'ℹ'}</span>${m}`;c.appendChild(d);setTimeout(()=>d.remove(),3000);}
+
+async function api(m,p,b=null){const o={method:m,credentials:'same-origin',headers:{}};if(b){o.headers['Content-Type']='application/json';o.body=JSON.stringify(b);}const r=await fetch(p,o);if(r.status===401&&p!=='/api/login'){sL();throw new Error('Session expired');}const d=await r.json();if(!r.ok)throw new Error(d.error||'Failed');return d;}
+
+function setBrand(name,logo){PN=name||'FirewallFalcon';PL=logo||'🦅';document.title=`${PL} ${PN} Panel`;
+['lv-logo','login-logo','mh-logo','sb-logo'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=PL;});
+['login-name','mh-name','sb-name'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=PN;});}
+
+async function loadBranding(){try{const r=await fetch('/api/branding');if(r.ok){const d=await r.json();setBrand(d.panel_name,d.panel_logo);}}catch(e){}}
+async function init(){await loadBranding();try{const m=await api('GET','/api/me');RL=m.role;ME=m.username;setBrand(m.panel_name,m.panel_logo);document.getElementById('lv').classList.add('hidden');sA();}catch(e){document.getElementById('lv').classList.add('hidden');sL();}}
+document.addEventListener('DOMContentLoaded',init);
+function sL(){document.getElementById('av').classList.add('hidden');document.getElementById('lview').classList.remove('hidden');}
+function sA(){document.getElementById('lview').classList.add('hidden');document.getElementById('av').classList.remove('hidden');aR();const s=localStorage.getItem('tab')||'dashboard';const at=['resellers','protocols','settings'];const t=(RL==='reseller'&&at.includes(s))?'dashboard':s;sw(t);sP();}
+function aR(){const a=RL==='admin';document.querySelectorAll('.ao').forEach(e=>{if(a)e.classList.remove('hidden');else e.classList.add('hidden');});
+if(!a){document.getElementById('rib').classList.remove('hidden');document.getElementById('dps').classList.add('hidden');document.getElementById('dud').textContent='Your users';}
+else{document.getElementById('rib').classList.add('hidden');document.getElementById('dps').classList.remove('hidden');document.getElementById('dud').textContent='Managed users';}
+const rb=document.getElementById('sr');rb.textContent=a?'🛡️ Administrator':`🤝 ${ME}`;rb.style.color=a?'var(--a)':'var(--t)';}
+function sw(t){localStorage.setItem('tab',t);document.querySelectorAll('.tp').forEach(p=>p.classList.add('hidden'));document.getElementById('tab-'+t).classList.remove('hidden');document.querySelectorAll('.ni,.bni').forEach(i=>i.classList.toggle('a',i.dataset.t===t));if(t==='dashboard')lD();else if(t==='users')lU();else if(t==='resellers')lR();else if(t==='protocols')lP();else if(t==='settings')lS();}
+document.querySelectorAll('.ni,.bni').forEach(i=>i.addEventListener('click',()=>sw(i.dataset.t)));
+document.getElementById('blo').addEventListener('click',async()=>{try{await api('POST','/api/logout');}catch(e){}sL();});
+document.getElementById('mlo').addEventListener('click',async()=>{try{await api('POST','/api/logout');}catch(e){}sL();});
+let poll;function sP(){if(poll)clearInterval(poll);poll=setInterval(()=>{if(document.getElementById('av').classList.contains('hidden'))return;const t=localStorage.getItem('tab')||'dashboard';if(t==='dashboard')lD(1);else if(t==='users')lU(1);else if(t==='resellers')lR(1);},5000);}
+document.getElementById('lf').addEventListener('submit',async e=>{e.preventDefault();const b=document.getElementById('lb');b.disabled=true;b.textContent='...';try{await api('POST','/api/login',{username:document.getElementById('lu').value,password:document.getElementById('lp').value});const m=await api('GET','/api/me');RL=m.role;ME=m.username;setBrand(m.panel_name,m.panel_logo);T('Welcome','s');sA();}catch(e){T(e.message,'e');}finally{b.disabled=false;b.textContent='Sign In';}});
+
+async function lD(s){try{const d=await api('GET','/api/dashboard');document.getElementById('du').textContent=d.user_count;document.getElementById('do').textContent=d.online_sessions;document.getElementById('dr').textContent=d.ram_percent+'%';document.getElementById('drd').textContent=`${d.ram_used_mb}/${d.ram_total_mb} MB`;document.getElementById('dc').textContent=d.cpu_load_1m;document.getElementById('sip').textContent=d.server_ip;document.getElementById('sos').textContent=d.os_name;document.getElementById('sup').textContent=d.uptime;if(d.reseller_info){document.getElementById('ri-q').textContent=`${d.reseller_info.created_users}/${d.reseller_info.max_users}`;document.getElementById('ri-e').textContent=d.reseller_info.expire_date;}if(d.protocols&&d.protocols.length)rP(d.protocols,'dp');}catch(e){if(!s)T('Error','e');}}
+
+async function lU(s){try{const d=await api('GET','/api/users');U=d.users||[];const si=document.getElementById('su');if(document.activeElement!==si||!si.value)fU();}catch(e){if(!s)T('Failed','e');}}
+function fU(){const q=document.getElementById('su').value.toLowerCase();rU(U.filter(u=>u.username.toLowerCase().includes(q)));}
+function rU(list){
+const tb=document.getElementById('utb'),cards=document.getElementById('ucc');tb.innerHTML='';cards.innerHTML='';const isA=RL==='admin';
+if(!list.length){tb.innerHTML=`<tr><td colspan="${isA?8:7}" style="text-align:center;color:var(--t3);padding:2rem;">No accounts</td></tr>`;cards.innerHTML='<div class="gc" style="text-align:center;color:var(--t3);padding:2rem;">No accounts</div>';return;}
+list.forEach(u=>{
+const bg=u.is_expired?'<span class="badge br">Expired</span>':u.is_locked?'<span class="badge by">Locked</span>':'<span class="badge bg2">Active</span>';
+const bw=u.bandwidth_gb>0?`${fB(u.total_used_bytes)}/${u.bandwidth_gb}G`:`${fB(u.total_used_bytes)}/∞`;
+const dl2=dL(u.expire_date);
+const tr=document.createElement('tr');
+tr.innerHTML=`<td class="mono" style="font-weight:600;color:var(--al);">${E(u.username)}</td>
+<td><span class="mono" style="color:var(--t2);font-size:.78rem;" id="p-${u.username}">••••••</span> <span style="cursor:pointer;font-size:.7rem;opacity:.6;" onclick="tp('p-${u.username}','${E(u.password)}')">👁</span></td>
+<td><span class="mono" style="font-size:.75rem;">${u.expire_date}</span>${dl2?'<br>'+dl2:''}</td>
+<td><span style="color:${u.online_sessions?'var(--t)':'inherit'};font-weight:600;">${u.online_sessions}</span>/${u.conn_limit}</td>
+<td class="mono" style="font-size:.75rem;">${bw}</td><td>${bg}</td>
+${isA?`<td><span class="badge ${u.owner==='admin'?'by':'bt'}">${E(u.owner||'admin')}</span></td>`:''}
+<td><div class="tda">
+<button class="bi" title="Copy" onclick="cA('${E(u.username)}','${E(u.password)}','${u.expire_date}',${u.bandwidth_gb},${u.daily_bandwidth_gb},${u.conn_limit})">📋</button>
+<button class="bi" title="Edit" onclick="eU('${E(u.username)}',${u.conn_limit},${u.bandwidth_gb},${u.daily_bandwidth_gb})">✏️</button>
+<button class="bi" title="Renew" onclick="rnU('${E(u.username)}')">🔄</button>
+${u.is_locked?`<button class="bi" title="Unlock" onclick="lkU('${E(u.username)}',0)">🔓</button>`:`<button class="bi" title="Lock" onclick="lkU('${E(u.username)}',1)">🔒</button>`}
+<button class="bi" title="Delete" style="color:var(--r);" onclick="dU('${E(u.username)}')">🗑</button>
+</div></td>`;tb.appendChild(tr);
+const c=document.createElement('div');c.className='gc uc';
+c.innerHTML=`<div class="ucb"><div class="uct"><span class="ucn">${E(u.username)}</span>${bg}</div>
+<div class="ucg">
+<div class="uf"><span class="ufl">Password</span><span class="ufv"><span class="mono" id="mp-${u.username}">••••••</span> <span style="cursor:pointer;opacity:.5;" onclick="tp('mp-${u.username}','${E(u.password)}')">👁</span></span></div>
+<div class="uf"><span class="ufl">Expiry</span><span class="ufv mono" style="font-size:.78rem;">${u.expire_date}</span>${dl2||''}</div>
+<div class="uf"><span class="ufl">Sessions</span><span class="ufv"><b style="color:${u.online_sessions?'var(--t)':'inherit'}">${u.online_sessions}</b> / ${u.conn_limit}</span></div>
+<div class="uf"><span class="ufl">Bandwidth</span><span class="ufv mono" style="font-size:.78rem;">${bw}</span></div>
+${isA?`<div class="uf"><span class="ufl">Owner</span><span class="badge ${u.owner==='admin'?'by':'bt'}" style="width:fit-content;margin-top:.1rem;">${E(u.owner||'admin')}</span></div>`:''}</div></div>
+<div class="uca">
+<button class="uact" onclick="cA('${E(u.username)}','${E(u.password)}','${u.expire_date}',${u.bandwidth_gb},${u.daily_bandwidth_gb},${u.conn_limit})"><span class="uai">📋</span>Copy</button>
+<button class="uact" onclick="eU('${E(u.username)}',${u.conn_limit},${u.bandwidth_gb},${u.daily_bandwidth_gb})"><span class="uai">✏️</span>Edit</button>
+<button class="uact" onclick="rnU('${E(u.username)}')"><span class="uai">🔄</span>Renew</button>
+${u.is_locked?`<button class="uact" onclick="lkU('${E(u.username)}',0)"><span class="uai">🔓</span>Unlock</button>`:`<button class="uact" onclick="lkU('${E(u.username)}',1)"><span class="uai">🔒</span>Lock</button>`}
+<button class="uact dng" onclick="dU('${E(u.username)}')"><span class="uai">🗑</span>Del</button>
+</div>`;cards.appendChild(c);});}
+
+async function lR(s){try{const d=await api('GET','/api/resellers');rR(d.resellers||[]);}catch(e){if(!s)T('Failed','e');}}
+function rR(list){
+const tb=document.getElementById('rtb'),cards=document.getElementById('rcc');tb.innerHTML='';cards.innerHTML='';
+if(!list.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:2rem;">No resellers</td></tr>';cards.innerHTML='<div class="gc" style="text-align:center;color:var(--t3);padding:2rem;">No resellers</div>';return;}
+list.forEach(r=>{
+const bg=r.is_expired?'<span class="badge br">Expired</span>':!r.enabled?'<span class="badge bgr">Disabled</span>':'<span class="badge bg2">Active</span>';
+const dl2=dL(r.expire_date);
+const tr=document.createElement('tr');
+tr.innerHTML=`<td class="mono" style="font-weight:600;color:var(--t);">${E(r.username)}</td>
+<td><span class="mono" style="color:var(--t2);font-size:.78rem;" id="rp-${r.username}">••••••</span> <span style="cursor:pointer;font-size:.7rem;opacity:.6;" onclick="tp('rp-${r.username}','${E(r.password)}')">👁</span></td>
+<td><span class="mono" style="font-size:.75rem;">${r.expire_date}</span>${dl2?'<br>'+dl2:''}</td>
+<td><span style="color:var(--a);font-weight:600;">${r.created_users}</span>/${r.max_users}</td><td>${bg}</td>
+<td><div class="tda"><button class="bi" title="Edit" onclick="eR('${E(r.username)}',${r.max_users})">✏️</button><button class="bi" title="${r.enabled?'Disable':'Enable'}" onclick="tR('${E(r.username)}')">${r.enabled?'🔒':'🔓'}</button><button class="bi" title="Delete" style="color:var(--r);" onclick="dR('${E(r.username)}',${r.created_users})">🗑</button></div></td>`;
+tb.appendChild(tr);
+const c=document.createElement('div');c.className='gc uc';
+c.innerHTML=`<div class="ucb"><div class="uct"><span class="ucn" style="color:var(--t);">${E(r.username)}</span>${bg}</div>
+<div class="ucg"><div class="uf"><span class="ufl">Password</span><span class="ufv"><span class="mono" id="mrp-${r.username}">••••••</span> <span style="cursor:pointer;opacity:.5;" onclick="tp('mrp-${r.username}','${E(r.password)}')">👁</span></span></div>
+<div class="uf"><span class="ufl">Expiry</span><span class="ufv mono" style="font-size:.78rem;">${r.expire_date}</span>${dl2||''}</div>
+<div class="uf"><span class="ufl">Users</span><span class="ufv"><b style="color:var(--a);">${r.created_users}</b> / ${r.max_users}</span></div></div></div>
+<div class="uca"><button class="uact" onclick="eR('${E(r.username)}',${r.max_users})"><span class="uai">✏️</span>Edit</button>
+<button class="uact" onclick="tR('${E(r.username)}')"><span class="uai">${r.enabled?'🔒':'🔓'}</span>${r.enabled?'Disable':'Enable'}</button>
+<button class="uact dng" onclick="dR('${E(r.username)}',${r.created_users})"><span class="uai">🗑</span>Delete</button>
+<button class="uact" onclick="cT('${E(r.username)}:${E(r.password)}')"><span class="uai">📋</span>Copy</button></div>`;
+cards.appendChild(c);});}
+
+async function lP(s){try{const d=await api('GET','/api/protocols');rP(d,'pg');}catch(e){if(!s)T('Failed','e');}}
+function rP(list,cid){const c=document.getElementById(cid);c.innerHTML='';list.forEach(p=>{const b=!p.installed?'<span class="badge bgr">N/A</span>':p.running?'<span class="badge bg2">Running</span>':'<span class="badge br">Stopped</span>';const d=document.createElement('div');d.className='gc pcard';d.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-weight:600;">${p.name}</span>${b}</div><div style="font-size:.75rem;color:var(--t3);">Port: <span class="mono" style="color:var(--tx);">${p.port}</span></div>${p.installed?`<button class="btn bs2 bsm" style="width:100%;" onclick="rpP('${p.service}')">Restart</button>`:''}`;c.appendChild(d);});}
+async function rpP(s){try{await api('POST',`/api/protocols/${s}/restart`);T('Restarted','s');lP();}catch(e){T('Failed','e');}}
+
+async function lS(){try{const d=await api('GET','/api/settings');document.getElementById('scu').value=d.username||'';document.getElementById('ss').value=d.secret||'';document.getElementById('s-pn').value=d.panel_name||'FirewallFalcon';document.getElementById('s-pl').value=d.panel_logo||'🦅';uPr(d.secret||'');}catch(e){}}
+document.getElementById('ss').addEventListener('input',e=>uPr(e.target.value));
+function uPr(s){const h=location.host;const p=s.trim().replace(/^\/+/,'');document.getElementById('sur').textContent=p?`http://${h}/${p}`:`http://${h}/`;}
+document.getElementById('sf').addEventListener('submit',async e=>{e.preventDefault();try{const r=await api('PUT','/api/settings',{current_password:document.getElementById('scp').value,new_username:document.getElementById('snu').value,new_password:document.getElementById('snp').value,new_secret:document.getElementById('ss').value,panel_name:document.getElementById('s-pn').value,panel_logo:document.getElementById('s-pl').value});setBrand(r.panel_name,r.panel_logo);T('Saved','s');if(r.secret){const u=`http://${location.host}/${r.secret}`;alert(`New URL: ${u}`);location.href=u;}else lS();}catch(e){T(e.message,'e');}});
+
+async function lkU(u,l){try{await api('POST',`/api/users/${u}/${l?'lock':'unlock'}`);T(`${l?'Locked':'Unlocked'}`,'s');lU();}catch(e){T(e.message,'e');}}
+async function dU(u){if(!confirm(`Delete "${u}"?`))return;try{await api('DELETE',`/api/users/${u}`);T('Deleted','s');lU();}catch(e){T(e.message,'e');}}
+async function rnU(u){const d=prompt(`Renew ${u} — days?`,'30');if(!d||isNaN(d))return;try{await api('POST',`/api/users/${u}/renew`,{days:+d});T('Renewed','s');lU();}catch(e){T(e.message,'e');}}
+async function tR(u){try{const r=await api('POST',`/api/resellers/${u}/toggle`);T(`${r.enabled?'Enabled':'Disabled'}`,'s');lR();}catch(e){T(e.message,'e');}}
+async function dR(u,n){let del=false;if(n>0)del=confirm(`Also delete ${n} SSH accounts?`);if(!confirm(`Delete reseller "${u}"?`))return;try{await api('DELETE',`/api/resellers/${u}?delete_users=${del?'1':'0'}`);T('Deleted','s');lR();}catch(e){T(e.message,'e');}}
+async function sysReboot(){if(!confirm('Reboot the server? This will disconnect all users temporarily.'))return;try{await api('POST','/api/system/reboot');T('Rebooting...','s');setTimeout(()=>sL(),2000);}catch(e){T(e.message,'e');}}
+
+function openM(id){document.getElementById(id).classList.add('active');}
+function closeM(id){document.getElementById(id).classList.remove('active');}
+function openCU(){if(RL==='reseller'){api('GET','/api/me').then(m=>{if(m.created_users>=m.max_users){T(`Limit (${m.max_users})`,'e');return;}const q=document.getElementById('cq');q.textContent=`${m.created_users}/${m.max_users} quota used`;q.classList.remove('hidden');openM('mcu');}).catch(e=>T(e.message,'e'));}else{document.getElementById('cq').classList.add('hidden');openM('mcu');}}
+function eU(u,c,b,d){document.getElementById('euh').value=u;document.getElementById('eun').value=u;document.getElementById('euc').value=c;document.getElementById('eub').value=b;document.getElementById('eudb').value=d;openM('meu');}
+function eR(u,m){document.getElementById('erh').value=u;document.getElementById('ern').value=u;document.getElementById('erm').value=m;openM('mer');}
+
+document.getElementById('fcu').addEventListener('submit',async e=>{e.preventDefault();try{await api('POST','/api/users',{username:document.getElementById('cn').value,password:document.getElementById('cp').value,days:+document.getElementById('cd').value,conn_limit:+document.getElementById('cc').value,bandwidth_gb:+(document.getElementById('cb').value||0),daily_bandwidth_gb:+(document.getElementById('cdb').value||0)});T('Created','s');closeM('mcu');lU();}catch(e){T(e.message,'e');}});
+document.getElementById('feu').addEventListener('submit',async e=>{e.preventDefault();const u=document.getElementById('euh').value,b={conn_limit:+document.getElementById('euc').value,bandwidth_gb:+(document.getElementById('eub').value||0),daily_bandwidth_gb:+(document.getElementById('eudb').value||0)};const p=document.getElementById('eup').value;if(p)b.password=p;const d=document.getElementById('eud').value;if(d)b.days=+d;try{await api('PUT',`/api/users/${u}`,b);T('Updated','s');closeM('meu');lU();}catch(e){T(e.message,'e');}});
+document.getElementById('fb').addEventListener('submit',async e=>{e.preventDefault();try{const r=await api('POST','/api/users/bulk',{prefix:document.getElementById('bp2').value,count:+document.getElementById('bc').value,days:+document.getElementById('bd').value,conn_limit:+document.getElementById('bcc').value});T(`${r.users?r.users.length:0} created`,'s');closeM('mbk');lU();}catch(e){T(e.message,'e');}});
+document.getElementById('fcr').addEventListener('submit',async e=>{e.preventDefault();try{await api('POST','/api/resellers',{username:document.getElementById('rn').value,password:document.getElementById('rp2').value,days:+document.getElementById('rd').value,max_users:+document.getElementById('rm').value});T('Created','s');closeM('mcr');lR();}catch(e){T(e.message,'e');}});
+document.getElementById('fer').addEventListener('submit',async e=>{e.preventDefault();const u=document.getElementById('erh').value,b={max_users:+document.getElementById('erm').value};const p=document.getElementById('erp').value;if(p)b.password=p;const d=document.getElementById('erd').value;if(d)b.days=+d;try{await api('PUT',`/api/resellers/${u}`,b);T('Updated','s');closeM('mer');lR();}catch(e){T(e.message,'e');}});
+
+function gp(id){const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';let r='';for(let i=0;i<10;i++)r+=c[Math.floor(Math.random()*c.length)];document.getElementById(id).value=r;}
+function tp(id,p){const e=document.getElementById(id);e.textContent=e.textContent==='••••••'?p:'••••••';}
+function cT(t){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t);T('Copied','i');}else{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.left='-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');T('Copied','i');}catch(e){T('Failed','e');}document.body.removeChild(a);}}
+function cA(u,p,e,b,d,c){let t=`👤 ${u}\n🔑 ${p}\n📅 ${e}\n🔌 ${c} devices\n`;if(b>0||d>0){t+='📊 ';if(b>0)t+=`${b}GB total `;if(d>0)t+=`${d}GB/day`;t+='\n';}cT(t);}
+</script>
+</body>
+</html>
